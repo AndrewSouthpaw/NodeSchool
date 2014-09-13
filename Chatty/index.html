@@ -12,6 +12,7 @@
 		      #messages li { padding: 5px 10px; }
 		      #messages li:nth-child(odd) { background: #eee; }
 	    </style>
+		
 	</head>
 	<body>
 		<ul id='messages'></ul>
@@ -19,5 +20,32 @@
 			<input id='m' autocomplete'off' /><button>Send</button>
 		</form>
 		
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script>
+			var socket = io();
+			socket.on('connect', function (data) {
+				nickname = prompt("What's your name?");
+				socket.emit('join', nickname);
+			});
+			$('form').submit(function () {
+				var msg = $('#m').val();
+				$('#messages').append($('<li><p>').text('Me: ' + msg));
+				socket.emit('messageFromClient', msg);
+				$('#m').val('');
+				return false;
+			});
+			
+			socket.on('userConnect', function (userName) {
+				$('#messages').append($('<li><p>').text(userName + ' connected.'));
+			});
+			socket.on('userDisconnect', function (userName) {
+				$('#messages').append($('<li><p>').text(userName + ' disconnected.'));
+			});	
+			socket.on('messageFromServer', function (data) {
+				$('#messages').append($('<li><p>').text(data.userName + ": " + data.msg));
+			});
+			
+		</script>
 	</body>
 </html>
