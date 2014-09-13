@@ -1,0 +1,8 @@
+{
+  "name": "chatty-app",
+  "version": "0.0.1",
+  "description": "my first chat app!",
+  "dependencies": {
+    "express": "^4.9.0"
+  }
+}
